@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, BookmarkIcon } from '@heroicons/react/24/outline';
 import DOMPurify from 'dompurify';
 
 const SurahDetail = () => {
   const { id } = useParams();
   const [verses, setVerses] = useState([]);
   const [surahInfo, setSurahInfo] = useState(null);
+  const [juzInfo, setJuzInfo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentJuz, setCurrentJuz] = useState(null);
 
-  // Fungsi sanitasi
   const sanitizeTranslation = (text) => {
     if (!text) return '';
     const cleaned = text.replace(/<sup[^>]*>.*?<\/sup>/g, '');
@@ -20,20 +21,38 @@ const SurahDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [surahRes, versesRes] = await Promise.all([
-          fetch(`https://api.quran.com/api/v4/chapters/${id}`),
-          fetch(`https://api.quran.com/api/v4/verses/by_chapter/${id}?translations=33&fields=text_uthmani,verse_key`)
-        ]);
+        // Langkah 1: Ambil data surah untuk mendapatkan jumlah ayat
+        const surahRes = await fetch(`https://api.quran.com/api/v4/chapters/${id}`);
+        if (!surahRes.ok) throw new Error('Gagal memuat data surah');
+        const surahData = await surahRes.json();
+        
+        // Langkah 2: Ambil semua ayat berdasarkan jumlah ayat yang didapat
+        const versesRes = await fetch(
+          `https://api.quran.com/api/v4/verses/by_chapter/${id}?translations=33&fields=text_uthmani,verse_key&per_page=${surahData.chapter.verses_count}`
+        );
+        if (!versesRes.ok) throw new Error('Gagal memuat ayat');
 
-        if (!surahRes.ok || !versesRes.ok) throw new Error('Gagal memuat data');
-
-        const [surahData, versesData] = await Promise.all([
-          surahRes.json(),
-          versesRes.json()
+        // Langkah 3: Ambil data juz secara paralel
+        const juzRes = fetch('https://api.quran.com/api/v4/juzs');
+        
+        const [versesData, juzData] = await Promise.all([
+          versesRes.json(),
+          (await juzRes).json()
         ]);
 
         setSurahInfo(surahData.chapter);
         setVerses(versesData.verses);
+        setJuzInfo(juzData.juzs);
+
+        // Cari informasi juz
+        const surahId = parseInt(id);
+        const foundJuz = juzData.juzs.find(juz => {
+          const mappings = Object.keys(juz.verse_mapping);
+          const firstSurah = parseInt(mappings[0].split('-')[0]);
+          const lastSurah = parseInt(mappings[mappings.length - 1].split('-')[0]);
+          return surahId >= firstSurah && surahId <= lastSurah;
+        });
+        setCurrentJuz(foundJuz);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -44,7 +63,6 @@ const SurahDetail = () => {
     fetchData();
   }, [id]);
 
-  // Handle loading state
   if (loading) {
     return (
       <div className="fixed inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
@@ -56,7 +74,6 @@ const SurahDetail = () => {
     );
   }
 
-  // Handle error state
   if (error) {
     return (
       <div className="fixed inset-0 bg-red-50/80 backdrop-blur-sm flex items-center justify-center">
@@ -78,7 +95,6 @@ const SurahDetail = () => {
     );
   }
 
-  // Main render setelah data tersedia
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-emerald-50/50">
       {/* Header */}
@@ -99,12 +115,21 @@ const SurahDetail = () => {
               </h1>
               <div className="flex items-center justify-center space-x-3 mt-1">
                 <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium">
-                  {surahInfo?.revelation_place}
+                  {surahInfo?.revelation_place === 'makkah' ? 'Makkiyah' : 'Madaniyah'}
                 </span>
                 <span className="text-gray-500">•</span>
                 <span className="text-gray-600 text-sm">
                   {surahInfo?.verses_count} Ayat
                 </span>
+                {currentJuz && (
+                  <>
+                    <span className="text-gray-500">•</span>
+                    <span className="flex items-center text-sm text-emerald-600">
+                      <BookmarkIcon className="h-4 w-4 mr-1" />
+                      Juz {currentJuz.id}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
             
