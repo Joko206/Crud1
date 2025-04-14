@@ -13,7 +13,6 @@ const SurahList = () => {
   });
   const [showFilters, setShowFilters] = useState(false);
 
-  // Pembagian Juz berdasarkan surah (diperbarui)
   const juzToSurah = {
     1: { start: 1, end: 2 },
     2: { start: 2, end: 2 },

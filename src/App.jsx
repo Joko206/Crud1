@@ -1,4 +1,3 @@
-// App.js
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SurahList from './components/SurahList';
 import SurahDetail from './components/SurahDetail';

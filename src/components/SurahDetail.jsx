@@ -12,7 +12,7 @@ const SurahDetail = () => {
   const [reciters, setReciters] = useState([]);
   const [selectedReciter, setSelectedReciter] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
-  const [currentJuz, setCurrentJuz] = useState(null); // Ensure currentJuz is defined
+  const [currentJuz, setCurrentJuz] = useState(null);
   const verseRefs = useRef([]);
 
   const sanitizeTranslation = (text) => {
@@ -30,7 +30,7 @@ const SurahDetail = () => {
         const [surahRes, versesRes, juzRes] = await Promise.all([
           fetch(`https://api.quran.com/api/v4/chapters/${id}`),
           fetch(`https://api.quran.com/api/v4/verses/by_chapter/${id}?translations=33&fields=text_uthmani,verse_key&per_page=286`),
-          fetch('https://api.quran.com/api/v4/juzs') // Fetch Juz data
+          fetch('https://api.quran.com/api/v4/juzs') 
         ]);
 
         if (!surahRes.ok || !versesRes.ok || !juzRes.ok) {
@@ -46,12 +46,11 @@ const SurahDetail = () => {
         setSurahInfo(surahData.chapter);
         setVerses(versesData.verses);
 
-        // Find the current Juz based on the verse mapping
         const foundJuz = juzData.juzs.find(juz => 
           Object.keys(juz.verse_mapping).some(range => range.startsWith(`${id}:`))
         );
 
-        setCurrentJuz(foundJuz); // Set the current Juz
+        setCurrentJuz(foundJuz); 
 
       } catch (err) {
         setError(err.message);
@@ -189,7 +188,7 @@ const SurahDetail = () => {
           {verses.map((verse, index) => (
             <div
               key={verse.id}
-              ref={(el) => (verseRefs.current[index] = el)} // Assign ref to each verse
+              ref={(el) => (verseRefs.current[index] = el)}
               className="group bg-white/90 backdrop-blur-sm p-6 rounded -2xl shadow-xs hover:shadow-sm 
                        border-2 border-blue-100/50 hover:border-blue-200 transition-all duration-200"
             >
