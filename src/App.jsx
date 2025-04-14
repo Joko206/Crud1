@@ -1,3 +1,4 @@
+// App.js
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SurahList from './components/SurahList';
 import SurahDetail from './components/SurahDetail';
@@ -5,24 +6,33 @@ import SurahDetail from './components/SurahDetail';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-cyan-50">
-        <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto py-5 px-4">
-            <h1 className="text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600">
-              Al-Qur'an Digital
-            </h1>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+        <header className="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-10 border-b border-blue-100">
+          <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-2">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                Al-Qur'an Digital
+              </h1>
+              <p className="text-blue-600/80 text-lg font-light">
+                Membaca dan Memahami Kitab Suci
+              </p>
+            </div>
           </div>
         </header>
 
-        <main className="max-w-7xl mx-auto px-4 py-8">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Routes>
             <Route path="/" element={<SurahList />} />
             <Route path="/surah/:id" element={<SurahDetail />} />
           </Routes>
         </main>
 
-        <footer className="text-center py-6 text-gray-500 text-sm">
-          © by Joko Suprianto 12350110343 kelas A
+        <footer className="mt-16 bg-blue-900/90 text-blue-100 py-6 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p className="text-sm font-light">
+              © {new Date().getFullYear()} Al-Qur'an Digital • Dibangun dengan ❤️ oleh Joko Suprianto
+            </p>
+          </div>
         </footer>
       </div>
     </Router>

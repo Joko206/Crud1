@@ -67,7 +67,6 @@ const SurahList = () => {
     const matchesSearch = surah.name_simple.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          surah.translated_name.name.toLowerCase().includes(searchTerm.toLowerCase());
     
-    // Filter Juz yang diperbaiki
     const juzNumber = Number(filters.juz);
     const matchesJuz = !filters.juz || 
                       (surah.id >= juzToSurah[juzNumber].start && 
@@ -98,54 +97,54 @@ const SurahList = () => {
   if (loading) {
     return (
       <div className="text-center py-8">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500"></div>
+        <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
         <p className="mt-2 text-gray-600">Memuat surah...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-4 py-6 bg-blue-50">
       <div className="space-y-4">
         <div className="relative">
           <input
             type="text"
             placeholder="Cari surah atau terjemahan..."
-            className="w-full p-4 pl-12 text-lg rounded-xl border border-emerald-100 bg-white/50 backdrop-blur-sm 
-                     focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
-                     shadow-sm transition-all duration-200"
+            className="w-full p-4 pl-12 text-lg rounded-xl border-2 border-blue-200/50 bg-white/80 backdrop-blur-sm 
+                     focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100
+                     shadow-sm transition-all duration-200 placeholder:text-blue-300"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 absolute left-4 top-5" />
+          <MagnifyingGlassIcon className="h-5 w-5 text-blue-400 absolute left-4 top-5" />
         </div>
 
         <div className="flex justify-between items-center">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center space-x-2 px-4 py-2 bg-white rounded-lg border border-emerald-100 text-emerald-600 hover:bg-emerald-50 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2.5 bg-white/80 backdrop-blur-md rounded-xl border-2 border-blue-200/50 text-blue-600 hover:bg-blue-50 transition-all"
           >
             <FunnelIcon className="h-5 w-5" />
-            <span>Filter</span>
+            <span>Filter Surah</span>
           </button>
 
           {(Object.values(filters).some(Boolean) || searchTerm) && (
             <button
               onClick={resetFilters}
-              className="text-sm text-emerald-600 hover:text-emerald-700 underline"
+              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
             >
-              Reset semua filter
+              Reset Filter
             </button>
           )}
         </div>
 
         {showFilters && (
-          <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-emerald-100 shadow-sm">
+          <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border-2 border-blue-200/50 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Juz</label>
                 <select
-                  className="w-full p-2 rounded-lg border border-gray-200 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full p-2 rounded-lg border border-gray-200 focus:ring-blue-500 focus:border-blue-500"
                   value={filters.juz}
                   onChange={(e) => setFilters({...filters, juz: e.target.value})}
                 >
@@ -159,7 +158,7 @@ const SurahList = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Tempat Turun</label>
                 <select
-                  className="w-full p-2 rounded-lg border border-gray-200 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full p-2 rounded-lg border border-gray-200 focus:ring-blue-500 focus:border-blue-500"
                   value={filters.revelationType}
                   onChange={(e) => setFilters({...filters, revelationType: e.target.value})}
                 >
@@ -172,7 +171,7 @@ const SurahList = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Panjang Surah</label>
                 <select
-                  className="w-full p-2 rounded-lg border border-gray-200 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full p-2 rounded-lg border border-gray-200 focus:ring-blue-500 focus:border-blue-500"
                   value={filters.verseCount}
                   onChange={(e) => setFilters({...filters, verseCount: e.target.value})}
                 >
@@ -187,10 +186,8 @@ const SurahList = () => {
         )}
       </div>
 
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-blue-600/80 font-medium">
         Menampilkan {filteredSurahs.length} dari {surahs.length} surah
-        {filters.juz && ` (Juz ${filters.juz})`}
-        {filters.revelationType && ` (${filters.revelationType === 'makkah' ? 'Makkiyah' : 'Madaniyah'})`}
       </div>
 
       {filteredSurahs.length > 0 ? (
@@ -199,30 +196,30 @@ const SurahList = () => {
             <Link
               to={`/surah/${surah.id}`}
               key={surah.id}
-              className="group bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-sm hover:shadow-lg 
-                       border border-white transition-all duration-200 hover:border-emerald-100
+              className="group bg-white/90 backdrop-blur-sm p-5 rounded-xl shadow-sm hover:shadow-lg 
+                       border-2 border-blue-100/50 transition-all duration-300 hover:border-blue-200
                        hover:-translate-y-0.5"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full 
-                                bg-emerald-500/10 text-emerald-600 font-medium">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-lg 
+                                bg-blue-600/10 text-blue-600 font-medium">
                     {surah.id}
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-800 group-hover:text-emerald-700">
+                    <h3 className="text-xl font-semibold text-blue-900 group-hover:text-blue-700">
                       {surah.name_simple}
                     </h3>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-blue-500/90 mt-1">
                       {surah.translated_name.name}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-md">
+                  <p className="text-xs font-medium text-blue-600 bg-blue-100/50 px-2 py-1 rounded-md">
                     {surah.verses_count} ayat
                   </p>
-                  <p className="text-xs text-gray-400 mt-1 capitalize">
+                  <p className="text-[0.7rem] text-blue-400/80 mt-1 uppercase tracking-wide font-medium">
                     {surah.revelation_place === 'makkah' ? 'Makkiyah' : 'Madaniyah'}
                   </p>
                 </div>
@@ -231,11 +228,11 @@ const SurahList = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 bg-white/50 rounded-xl border border-dashed border-gray-200">
-          <div className="text-gray-400 mb-2">Tidak ada surah yang ditemukan</div>
+        <div className="text-center py-12 bg-white/50 rounded-xl border-2 border-dashed border-blue-200">
+          <div className="text-blue-400 mb-2">Tidak ada surah yang ditemukan</div>
           <button
             onClick={resetFilters}
-            className="text-emerald-600 hover:text-emerald-700 underline text-sm"
+            className="text-blue-600 hover:text-blue-700 font-medium text-sm"
           >
             Reset filter
           </button>
