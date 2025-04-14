@@ -30,7 +30,7 @@ function App() {
         <footer className="mt-16 bg-blue-900/90 text-blue-100 py-6 backdrop-blur-md">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p className="text-sm font-light">
-              © {new Date().getFullYear()} Al-Qur'an Digital • Dibangun dengan ❤️ oleh Joko Suprianto
+              © {new Date().getFullYear()} Al-Qur'an Digital • oleh Joko Suprianto (12350110343)
             </p>
           </div>
         </footer>
